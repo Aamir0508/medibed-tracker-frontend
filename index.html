@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediBed Tracker - Mumbai Hospital Bed Availability System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 70px 20px 90px;
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-subtext {
+            font-size: 0.95rem;
+            opacity: 0.85;
+        }
+
+        /* Disclaimer banner */
+        .disclaimer-banner {
+            background: #fff8e1;
+            border: 1px solid #ffca28;
+            color: #7a5b00;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .disclaimer-banner i {
+            margin-top: 2px;
+            color: #f57c00;
+        }
+
+        .emergency-strip {
+            background: #dc3545;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .emergency-strip a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: white;
+            padding: 35px 20px;
+            margin-top: -40px;
+            position: relative;
+            z-index: 10;
+            border-radius: 12px;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        .search-box {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .search-box input,
+        .search-box select {
+            border: 2px solid #667eea;
+            padding: 12px 15px;
+            font-size: 1rem;
+        }
+
+        .search-box input:focus,
+        .search-box select:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-input-wrap {
+            position: relative;
+        }
+
+        .search-input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            pointer-events: none;
+        }
+
+        .search-input {
+            padding-left: 42px !important;
+            padding-right: 38px !important;
+        }
+
+        .search-clear-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #999;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .search-clear-btn.show {
+            display: flex;
+        }
+
+        .search-clear-btn:hover {
+            background: #f0f0f0;
+            color: #667eea;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        /* Hospital Cards */
+        .hospital-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            margin-bottom: 20px;
+            height: 100%;
+        }
+
+        .hospital-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .hospital-photo {
+            height: 130px;
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hospital-photo::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.16) 0, transparent 45%),
+                               radial-gradient(circle at 85% 75%, rgba(255,255,255,0.12) 0, transparent 40%);
+        }
+
+        .hospital-photo i.fa-hospital {
+            position: absolute;
+            font-size: 5.5rem;
+            color: rgba(255,255,255,0.16);
+            right: -8px;
+            bottom: -14px;
+        }
+
+        .hospital-monogram {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.22);
+            border: 2px solid rgba(255,255,255,0.55);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hospital-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 20px;
+        }
+
+        .hospital-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .hospital-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .tag-badge {
+            font-size: 0.72rem;
+            background: rgba(255,255,255,0.22);
+            padding: 3px 9px;
+            border-radius: 20px;
+        }
+
+        .hospital-body {
+            padding: 20px;
+        }
+
+        .bed-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .bed-item {
+            text-align: center;
+            padding: 8px 4px;
+            border-radius: 8px;
+            background: #f0f0f0;
+            border-left: 4px solid #667eea;
+        }
+
+        .bed-type {
+            font-size: 0.72rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .bed-count {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .bed-count.available {
+            color: #28a745;
+        }
+
+        .bed-count.limited {
+            color: #ffc107;
+        }
+
+        .bed-count.unavailable {
+            color: #dc3545;
+        }
+
+        .hospital-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            font-size: 0.92rem;
+        }
+
+        .info-row i {
+            color: #667eea;
+            margin-right: 10px;
+            width: 20px;
+            margin-top: 3px;
+        }
+
+        .info-row a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .info-row a:hover {
+            color: #667eea;
+            text-decoration: underline;
+        }
+
+        .hospital-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-details {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 5px;
+            flex: 1;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            font-size: 0.88rem;
+        }
+
+        .btn-details:hover {
+            opacity: 0.9;
+        }
+
+        .btn-call {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            font-size: 0.88rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-call:hover {
+            background: #218838;
+            color: white;
+        }
+
+        .btn-directions {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            font-size: 0.88rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-directions:hover {
+            background: #138496;
+            color: white;
+        }
+
+        /* Hospital Details Modal */
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        /* Dashboard */
+        .dashboard-container {
+            display: none;
+        }
+
+        .dashboard-container.active {
+            display: block;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-title {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-group input,
+        .form-group select {
+            border: 2px solid #e0e0e0;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+            outline: none;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Alert */
+        .alert-custom {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 2px solid #2e7d32;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-custom.show {
+            display: block;
+        }
+
+        .alert-custom.error {
+            background: #ffebee;
+            color: #c62828;
+            border-color: #c62828;
+        }
+
+        /* Filters */
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group select {
+            border: 2px solid #667eea;
+            padding: 8px 12px;
+            border-radius: 5px;
+            min-width: 150px;
+        }
+
+        .results-count {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .hospital-list-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #667eea;
+        }
+
+        footer {
+            background: #2d2d3a;
+            color: rgba(255,255,255,0.7);
+            padding: 25px 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            margin-top: 40px;
+        }
+
+        /* About / Motive page */
+        .about-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+        }
+
+        .about-eyebrow {
+            display: inline-block;
+            background: rgba(255,255,255,0.18);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            margin-bottom: 16px;
+        }
+
+        .about-hero h2 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            line-height: 1.35;
+            max-width: 760px;
+            margin-bottom: 14px;
+        }
+
+        .about-hero p {
+            font-size: 1.05rem;
+            max-width: 640px;
+            opacity: 0.92;
+        }
+
+        .about-block {
+            background: white;
+            border-radius: 12px;
+            padding: 28px 30px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        }
+
+        .about-block h3 {
+            color: #4b3f8f;
+            font-size: 1.2rem;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .about-block h3 i {
+            color: #764ba2;
+        }
+
+        .about-block p {
+            color: #444;
+            line-height: 1.65;
+            font-size: 0.98rem;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+        }
+
+        .objective-item {
+            background: #f6f5fc;
+            border-left: 4px solid #764ba2;
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-size: 0.92rem;
+            color: #333;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .objective-item i {
+            color: #667eea;
+            margin-top: 2px;
+        }
+
+        .steps-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            font-size: 0.95rem;
+            color: #444;
+        }
+
+        .step-num {
+            flex-shrink: 0;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .benefits-list {
+            padding-left: 20px;
+            color: #444;
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }
+
+        .roadmap-tags {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .roadmap-tag {
+            background: #fff4e5;
+            color: #8a5300;
+            border: 1px solid #f4c07d;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.92rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .about-cta {
+            display: inline-block;
+            margin-top: 18px;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.6);
+            padding: 9px 20px;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: 0.25s;
+        }
+
+        .about-cta:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .bed-status {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hospital-actions {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Emergency strip -->
+    <div class="emergency-strip">
+        <i class="fas fa-phone-volume"></i> Medical emergency? Dial <a href="tel:108">108</a> (national ambulance) or <a href="tel:102">102</a> for free ambulance service, available across Mumbai 24/7.
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-lg">
+            <a class="navbar-brand" href="#" onclick="showHomePage(); return false;">
+                <i class="fas fa-hospital"></i> MediBed Tracker
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showHomePage(); return false;">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showAboutPage(); return false;">Our Motive</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showHospitalDashboard(); return false;">Hospital Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showAdminPanel(); return false;">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="authNavLink" onclick="authNavClick(); return false;">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-lg">
+        <!-- Home Page -->
+        <div id="homePage" class="home-page">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <h1>🏥 Find Hospital Beds Across Mumbai</h1>
+                <p><span id="heroHospitalCount">28</span> well-known Mumbai hospitals — addresses, phone numbers, and map directions in one place</p>
+                <div class="hero-subtext">Government and private hospitals across South Mumbai, the Western suburbs, and the Eastern suburbs</div>
+                <a href="#" class="about-cta" onclick="showAboutPage(); return false;">Why we built this <i class="fas fa-arrow-right-long"></i></a>
+            </div>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-box">
+                    <div class="row g-2">
+                        <div class="col-md-5">
+                            <div class="search-input-wrap">
+                                <i class="fas fa-search search-input-icon"></i>
+                                <input type="text" class="form-control search-input" id="searchCity" placeholder="Search hospital name or locality..." oninput="applyFilters()" onkeydown="if(event.key==='Enter'){event.preventDefault(); applyFilters();}" autocomplete="off">
+                                <button type="button" class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()" title="Clear search">
+                                    <i class="fas fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" id="areaFilterMain" onchange="applyFilters()">
+                                <option value="">All Mumbai Areas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="bedTypeFilter" onchange="applyFilters()">
+                                <option value="">All Bed Types</option>
+                                <option value="General">General Beds</option>
+                                <option value="ICU">ICU Beds</option>
+                                <option value="Oxygen">Oxygen Support Beds</option>
+                                <option value="NICU">NICU Beds</option>
+                                <option value="Emergency">Emergency Beds</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-search mt-3 w-100" onclick="searchHospitals()">
+                        <i class="fas fa-search"></i> Search Hospitals
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="container-lg mt-4">
+                <div class="filters">
+                    <div class="filter-group">
+                        <label style="font-weight: bold;">Sort By:</label>
+                        <select id="sortBy" onchange="applyFilters()">
+                            <option value="name">Hospital Name</option>
+                            <option value="availability">Bed Availability</option>
+                            <option value="area">Area</option>
+                        </select>
+                        <select id="typeFilter" onchange="applyFilters()">
+                            <option value="">Government &amp; Private</option>
+                            <option value="Government">Government Only</option>
+                            <option value="Private">Private Only</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="results-count" id="resultsCount"></div>
+
+                <!-- Results Section -->
+                <div id="resultsSection" class="row"></div>
+            </div>
+        </div>
+
+        <!-- About / Motive Page -->
+        <div id="aboutPage" class="dashboard-container">
+            <div class="about-hero">
+                <span class="about-eyebrow">Why we built this</span>
+                <h2>Every minute spent searching for a bed is a minute not spent on care</h2>
+                <p>MediBed Tracker exists to close the gap between a medical emergency and the nearest hospital that can actually help &mdash; with a real bed ready, right now.</p>
+            </div>
+
+            <div class="about-block">
+                <h3><i class="fas fa-triangle-exclamation"></i> The problem</h3>
+                <p>During a medical emergency, families lose precious time calling or visiting hospital after hospital just to ask one question: do you have a bed? Without a shared source of truth for General, ICU, Oxygen, NICU, and Emergency beds, that search causes delayed treatment, wasted travel, added stress, and poor coordination between hospitals, patients, and ambulances.</p>
+            </div>
+
+            <div class="about-block">
+                <h3><i class="fas fa-bullseye"></i> What we're working toward</h3>
+                <div class="objectives-grid">
+                    <div class="objective-item"><i class="fas fa-bed-pulse"></i> Real-time visibility into hospital bed availability</div>
+                    <div class="objective-item"><i class="fas fa-route"></i> Help patients and families find the nearest hospital with an open bed</div>
+                    <div class="objective-item"><i class="fas fa-truck-medical"></i> Give ambulance crews what they need to choose the right hospital, fast</div>
+                    <div class="objective-item"><i class="fas fa-hourglass-half"></i> Cut the delay between emergency and treatment</div>
+                    <div class="objective-item"><i class="fas fa-tower-broadcast"></i> Improve communication between hospitals and the public</div>
+                    <div class="objective-item"><i class="fas fa-shield-heart"></i> Be a reliable, easy-to-use system people can trust under pressure</div>
+                </div>
+            </div>
+
+            <div class="about-block">
+                <h3><i class="fas fa-list-check"></i> How it's meant to work</h3>
+                <div class="steps-timeline">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div><strong>Hospitals register</strong><br>Hospitals sign up and are verified by an administrator before going live on the platform.</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div><strong>Beds are kept current</strong><br>Each hospital updates its own bed availability through a secure dashboard, so the data comes from the source.</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div><strong>Search by need, not guesswork</strong><br>Patients, families, or ambulance crews search by location or the specific bed type they need.</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div><strong>Get there directly</strong><br>The system shows nearby hospitals with beds available, their contact details, and turn-by-turn directions via Google Maps.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="about-block h-100">
+                        <h3><i class="fas fa-star"></i> What this unlocks</h3>
+                        <ul class="benefits-list">
+                            <li>Saves valuable time during emergencies</li>
+                            <li>Cuts unnecessary travel between hospitals</li>
+                            <li>Better coordination between hospitals, patients, and ambulances</li>
+                            <li>One reliable, up-to-date source for healthcare availability</li>
+                            <li>Faster, better-informed emergency response</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="about-block h-100">
+                        <h3><i class="fas fa-road"></i> What's next</h3>
+                        <div class="roadmap-tags">
+                            <span class="roadmap-tag"><i class="fas fa-tower-broadcast"></i> Real-time bed availability</span>
+                            <span class="roadmap-tag"><i class="fas fa-location-crosshairs"></i> Live ambulance tracking</span>
+                            <span class="roadmap-tag"><i class="fas fa-calendar-check"></i> Online appointment booking</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-block">
+                <h3><i class="fas fa-database"></i> Where the data comes from</h3>
+                <p>Hospital details are grounded in trusted references &mdash; the Ayushman Bharat Digital Mission, the National Health Portal, the Open Government Data Platform India, the Maharashtra Public Health Department, and hospitals' own official listings. Live bed counts aren't published anywhere publicly today, so the long-term plan is for each registered hospital to keep its own status current through a secure login, which is what the Hospital Login dashboard on this site previews.</p>
+            </div>
+        </div>
+
+
+        <div id="hospitalDashboard" class="dashboard-container">
+            <div class="dashboard-card">
+                <div class="dashboard-title">
+                    <i class="fas fa-hospital"></i> Hospital Bed Management Dashboard
+                </div>
+
+                <div class="alert-custom" id="dashboardAlert"></div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="dashboard-title" style="font-size: 1.1rem; margin-bottom: 20px;">Update Bed Availability</div>
+                        <form onsubmit="updateHospitalBeds(event)">
+                            <div class="form-group">
+                                <label>Hospital Name</label>
+                                <select id="hospitalSelect" required onchange="showCurrentStatus()">
+                                    <option value="">Select Hospital</option>
+                                </select>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>General Beds</label>
+                                        <input type="number" id="generalBeds" placeholder="0" min="0" max="1000">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>ICU Beds</label>
+                                        <input type="number" id="icuBeds" placeholder="0" min="0" max="500">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Oxygen Beds</label>
+                                        <input type="number" id="oxygenBeds" placeholder="0" min="0" max="500">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>NICU Beds</label>
+                                        <input type="number" id="nicuBeds" placeholder="0" min="0" max="200">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Emergency Beds</label>
+                                <input type="number" id="emergencyBeds" placeholder="0" min="0" max="100">
+                            </div>
+
+                            <button type="submit" class="btn-submit">Update Availability</button>
+                        </form>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="dashboard-title" style="font-size: 1.1rem; margin-bottom: 20px;">Current Status</div>
+                        <div id="currentStatus" style="background: #f0f0f0; padding: 20px; border-radius: 10px;">
+                            <p style="color: #999; text-align: center;">Select a hospital to view current status</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div id="adminPanel" class="dashboard-container">
+            <div class="dashboard-card">
+                <div class="dashboard-title">
+                    <i class="fas fa-cog"></i> Admin Control Panel
+                </div>
+
+                <div class="alert-custom" id="adminAlert"></div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalHospitals">0</div>
+                        <div class="stat-label">Total Hospitals</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalBeds">0</div>
+                        <div class="stat-label">Total Beds Available</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="govVsPrivate">0 / 0</div>
+                        <div class="stat-label">Government / Private</div>
+                    </div>
+                </div>
+
+                <!-- Add / Edit Hospital Form -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="dashboard-title" style="font-size: 1.1rem; margin-bottom: 20px;" id="hospitalFormTitle">Register New Hospital</div>
+                        <form onsubmit="saveHospital(event)">
+                            <input type="hidden" id="editingHospitalId" value="">
+                            <div class="form-group">
+                                <label>Hospital Name</label>
+                                <input type="text" id="newHospitalName" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Area / Locality</label>
+                                <input type="text" id="newHospitalArea" required placeholder="e.g. Andheri West">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" id="newHospitalAddress" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Contact Number</label>
+                                <input type="tel" id="newHospitalPhone" required placeholder="022-XXXXXXXX">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select id="newHospitalType">
+                                    <option value="Private">Private</option>
+                                    <option value="Government">Government</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Facilities <span class="text-muted fw-normal">(comma separated, optional)</span></label>
+                                <input type="text" id="newHospitalFacilities" placeholder="e.g. 24/7 Emergency, ICU, Maternity">
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn-submit" id="hospitalFormSubmitBtn">Register Hospital</button>
+                                <button type="button" class="btn btn-outline-secondary" id="cancelEditBtn" style="display:none;" onclick="cancelEditHospital()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="dashboard-title" style="font-size: 1.1rem; margin-bottom: 20px;">Registered Hospitals</div>
+                        <div id="hospitalsList" style="max-height: 500px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-lock"></i> Staff Login</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form onsubmit="submitLogin(event)">
+                    <div class="modal-body">
+                        <div class="alert alert-danger py-2" id="loginError" style="display:none;"></div>
+                        <div class="form-group">
+                            <label for="loginUsername">Username</label>
+                            <input type="text" id="loginUsername" autocomplete="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" autocomplete="current-password" required>
+                        </div>
+                        <small class="text-muted">Hospital staff can update their own bed counts. The super admin can also register, edit and delete hospitals.</small>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="loginSubmitBtn">Log in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hospital Details Modal -->
+    <div class="modal fade" id="hospitalDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalHospitalName"></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalBodyContent"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="#" target="_blank" class="btn btn-info text-white" id="modalDirectionsBtn">
+                        <i class="fas fa-map-location-dot"></i> Directions
+                    </a>
+                    <a href="#" class="btn btn-danger" id="callAmbulanceBtn">
+                        <i class="fas fa-phone"></i> Call Hospital
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        MediBed Tracker is a demo directory. Hospital names, addresses, and phone numbers are provided for reference &mdash; please verify critical details (especially ICU/bed availability) by phone before travelling. In a life-threatening emergency, always dial 108 or 102 first.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ---------------------------------------------------------------
+        // Hospital Database — 28 well-known Mumbai hospitals
+        // Bed counts are demo/sample data only (not a live feed)
+        // ---------------------------------------------------------------
+        let hospitals = [
+            { id: 1, name: "Kokilaben Dhirubhai Ambani Hospital", area: "Andheri West", address: "Rao Saheb Achutrao Patwardhan Marg, Four Bungalows, Andheri West, Mumbai 400053", phone: "022-4269 6969", type: "Private", beds: { General: 22, ICU: 10, Oxygen: 18, NICU: 6, Emergency: 5 }, facilities: ["24/7 Emergency & Trauma", "Robotic Surgery", "Organ Transplant", "Oncology", "Cardiology"] },
+            { id: 2, name: "Lilavati Hospital & Research Centre", area: "Bandra West", address: "A-791, Bandra Reclamation, Bandra West, Mumbai 400050", phone: "022-2643 8281", type: "Private", beds: { General: 18, ICU: 9, Oxygen: 14, NICU: 5, Emergency: 4 }, facilities: ["24/7 Emergency", "Cardiac Care", "Neurology", "Oncology", "Multi-specialty ICU"] },
+            { id: 3, name: "P. D. Hinduja Hospital & Medical Research Centre", area: "Mahim", address: "Veer Savarkar Marg, Mahim West, Mumbai 400016", phone: "022-2445 2575", type: "Private", beds: { General: 20, ICU: 8, Oxygen: 12, NICU: 4, Emergency: 3 }, facilities: ["24/7 Emergency", "Nephrology", "Gastroenterology", "Home Care", "Diagnostics"] },
+            { id: 4, name: "Jaslok Hospital & Research Centre", area: "Pedder Road", address: "15, Dr. G. Deshmukh Marg, Pedder Road, Mumbai 400026", phone: "022-6657 3333", type: "Private", beds: { General: 15, ICU: 7, Oxygen: 10, NICU: 3, Emergency: 2 }, facilities: ["Super-specialty Care", "Neurosurgery", "Urology", "IVF", "Advanced Imaging"] },
+            { id: 5, name: "Breach Candy Hospital Trust", area: "Breach Candy", address: "60-A, Bhulabhai Desai Road, Breach Candy, Mumbai 400026", phone: "022-2367 1888", type: "Private", beds: { General: 16, ICU: 6, Oxygen: 9, NICU: 3, Emergency: 2 }, facilities: ["General Medicine", "Surgery", "Maternity", "Diagnostics"] },
+            { id: 6, name: "Dr. Balabhai Nanavati Max Super Speciality Hospital", area: "Vile Parle West", address: "S.V. Road, Vile Parle West, Mumbai 400056", phone: "022-2626 7500", type: "Private", beds: { General: 25, ICU: 12, Oxygen: 16, NICU: 8, Emergency: 5 }, facilities: ["24/7 Emergency", "Trauma Centre", "Dialysis", "NICU/PICU", "Cath Lab"] },
+            { id: 7, name: "Bombay Hospital & Medical Research Centre", area: "Marine Lines", address: "12, New Marine Lines, Mumbai 400020", phone: "022-2206 7676", type: "Private", beds: { General: 20, ICU: 9, Oxygen: 13, NICU: 4, Emergency: 4 }, facilities: ["24/7 Emergency", "Multi-specialty", "Diagnostics", "Surgery"] },
+            { id: 8, name: "Wockhardt Hospital, Mumbai Central", area: "Mumbai Central", address: "1877, Dr. Anand Rao Nair Marg, Near Agripada Police Court, Mumbai Central, Mumbai 400011", phone: "022-6178 4444", type: "Private", beds: { General: 19, ICU: 14, Oxygen: 15, NICU: 5, Emergency: 4 }, facilities: ["Large ICU capacity", "Cardiac Sciences", "Orthopedics", "GPS-enabled Ambulances"] },
+            { id: 9, name: "Fortis Hospital, Mulund", area: "Mulund West", address: "Mulund Goregaon Link Road, Mulund West, Mumbai 400078", phone: "022-6754 0000", type: "Private", beds: { General: 17, ICU: 8, Oxygen: 11, NICU: 3, Emergency: 3 }, facilities: ["24/7 Emergency", "Oncology", "Orthopedics", "Renal Care"] },
+            { id: 10, name: "Global Hospital, Parel", area: "Parel", address: "35, Dr. E Borges Road, Parel, Mumbai 400012", phone: "022-6767 0101", type: "Private", beds: { General: 14, ICU: 7, Oxygen: 9, NICU: 2, Emergency: 2 }, facilities: ["Organ Transplant", "Liver & Kidney Care", "Critical Care"] },
+            { id: 11, name: "Sir H. N. Reliance Foundation Hospital", area: "Girgaon", address: "Raja Rammohan Roy Road, Girgaon, Mumbai 400004", phone: "022-6145 6789", type: "Private", beds: { General: 16, ICU: 8, Oxygen: 10, NICU: 3, Emergency: 3 }, facilities: ["24/7 Emergency", "Cardiology", "Oncology", "Advanced Diagnostics"] },
+            { id: 12, name: "Tata Memorial Hospital", area: "Parel", address: "Dr. E Borges Road, Parel, Mumbai 400012", phone: "022-2417 7000", type: "Government", beds: { General: 12, ICU: 5, Oxygen: 8, NICU: 0, Emergency: 2 }, facilities: ["Cancer Care & Research", "Oncology", "Radiation Therapy"] },
+            { id: 13, name: "King Edward Memorial (KEM) Hospital", area: "Parel", address: "Acharya Donde Marg, Parel, Mumbai 400012", phone: "022-2410 7000", type: "Government", beds: { General: 30, ICU: 10, Oxygen: 20, NICU: 8, Emergency: 6 }, facilities: ["Teaching Hospital", "Cardiology", "Neurology", "General Surgery"] },
+            { id: 14, name: "Lokmanya Tilak Municipal General Hospital (Sion Hospital)", area: "Sion West", address: "Sion West, Mumbai 400022", phone: "022-2407 6381", type: "Government", beds: { General: 28, ICU: 9, Oxygen: 18, NICU: 6, Emergency: 5 }, facilities: ["Teaching Hospital", "Trauma Care", "Pediatrics", "Maternity"] },
+            { id: 15, name: "Sir J. J. Group of Hospitals", area: "Nagpada", address: "J.J. Marg, Nagpada, Mumbai 400008", phone: "022-2373 5555", type: "Government", beds: { General: 32, ICU: 11, Oxygen: 22, NICU: 7, Emergency: 6 }, facilities: ["Teaching Hospital", "Burns Unit", "General Surgery", "Ophthalmology"] },
+            { id: 16, name: "Dr. R. N. Cooper Municipal General Hospital", area: "Vile Parle West", address: "Juhu Road, Vile Parle West, Mumbai 400056", phone: "022-2620 8585", type: "Government", beds: { General: 20, ICU: 6, Oxygen: 12, NICU: 4, Emergency: 3 }, facilities: ["General Medicine", "Maternity", "Pediatrics"] },
+            { id: 17, name: "Saifee Hospital", area: "Marine Lines", address: "15/17, Maharshi Karve Road, Marine Lines, Mumbai 400004", phone: "022-6757 0111", type: "Private", beds: { General: 15, ICU: 7, Oxygen: 9, NICU: 3, Emergency: 2 }, facilities: ["24/7 Emergency", "Minimal Access Surgery", "Cardiology"] },
+            { id: 18, name: "Holy Family Hospital", area: "Bandra West", address: "St. Andrew's Road, Bandra West, Mumbai 400050", phone: "022-5070 0700", type: "Private", beds: { General: 13, ICU: 5, Oxygen: 8, NICU: 3, Emergency: 2 }, facilities: ["Maternity", "General Medicine", "Pediatrics"] },
+            { id: 19, name: "Asian Heart Institute", area: "Bandra Kurla Complex", address: "G/N Block, Bandra Kurla Complex, Bandra East, Mumbai 400051", phone: "022-6698 6666", type: "Private", beds: { General: 8, ICU: 10, Oxygen: 6, NICU: 0, Emergency: 3 }, facilities: ["Cardiac Surgery", "Cath Lab", "Cardiac ICU"] },
+            { id: 20, name: "Hiranandani Hospital, Powai", area: "Powai", address: "Hillside Avenue, Powai, Mumbai 400076", phone: "022-2576 3300", type: "Private", beds: { General: 17, ICU: 8, Oxygen: 11, NICU: 4, Emergency: 3 }, facilities: ["24/7 Emergency", "Orthopedics", "Maternity", "Diagnostics"] },
+            { id: 21, name: "Bhatia Hospital", area: "Tardeo", address: "Grant Road, Tardeo, Mumbai 400007", phone: "022-2363 1133", type: "Private", beds: { General: 12, ICU: 5, Oxygen: 7, NICU: 2, Emergency: 2 }, facilities: ["General Medicine", "Surgery", "Diagnostics"] },
+            { id: 22, name: "Masina Hospital", area: "Byculla", address: "Sankli Street, Byculla, Mumbai 400027", phone: "022-2372 6699", type: "Private", beds: { General: 14, ICU: 5, Oxygen: 8, NICU: 2, Emergency: 2 }, facilities: ["General Medicine", "Maternity", "Surgery"] },
+            { id: 23, name: "Seven Hills Hospital", area: "Andheri East", address: "Marol Maroshi Road, Andheri East, Mumbai 400059", phone: "022-6676 0000", type: "Private", beds: { General: 21, ICU: 9, Oxygen: 13, NICU: 4, Emergency: 4 }, facilities: ["24/7 Emergency", "Multi-specialty", "Trauma Care"] },
+            { id: 24, name: "Surya Hospital", area: "Santacruz West", address: "Santacruz West, Mumbai 400054", phone: "022-6666 7777", type: "Private", beds: { General: 10, ICU: 4, Oxygen: 6, NICU: 5, Emergency: 2 }, facilities: ["Maternity & Neonatology", "IVF", "Pediatrics"] },
+            { id: 25, name: "Criticare Asia Multi-Superspeciality Hospital", area: "Andheri West", address: "Four Bungalows, Andheri West, Mumbai 400053", phone: "022-6291 0333", type: "Private", beds: { General: 11, ICU: 6, Oxygen: 8, NICU: 2, Emergency: 3 }, facilities: ["Critical Care", "Trauma", "General Surgery"] },
+            { id: 26, name: "Rajawadi Hospital", area: "Ghatkopar East", address: "Rajawadi, Ghatkopar East, Mumbai 400077", phone: "022-2501 4341", type: "Government", beds: { General: 22, ICU: 6, Oxygen: 14, NICU: 4, Emergency: 3 }, facilities: ["General Medicine", "Maternity", "Pediatrics"] },
+            { id: 27, name: "Topiwala National Medical College & B.Y.L. Nair Hospital", area: "Mumbai Central", address: "Dr. A. L. Nair Road, Mumbai Central, Mumbai 400008", phone: "022-2307 5000", type: "Government", beds: { General: 26, ICU: 8, Oxygen: 17, NICU: 6, Emergency: 4 }, facilities: ["Teaching Hospital", "General Surgery", "Pediatrics", "Orthopedics"] },
+            { id: 28, name: "Bhagwati Municipal Hospital", area: "Borivali West", address: "S.V. Road, Borivali West, Mumbai 400092", phone: "022-2892 4741", type: "Government", beds: { General: 18, ICU: 4, Oxygen: 10, NICU: 3, Emergency: 2 }, facilities: ["General Medicine", "Maternity", "Emergency Care"] }
+        ];
+
+        let filteredHospitals = [...hospitals];
+        let selectedHospitalId = null;
+
+        function mapsUrl(h) {
+            return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(h.name + ", " + h.address);
+        }
+
+        function telUrl(phone) {
+            return "tel:" + phone.replace(/[^\d+]/g, "");
+        }
+
+        function totalBeds(h) {
+            return Object.values(h.beds).reduce((a, b) => a + b, 0);
+        }
+
+        function bedClass(count) {
+            if (count === 0) return "unavailable";
+            if (count <= 3) return "limited";
+            return "available";
+        }
+
+        // Distinct gradient palette + initials used to give each hospital
+        // its own visual "photo" tile (see note in the About page about why
+        // this app doesn't hotlink real building photos).
+        const photoPalette = [
+            ["#667eea", "#764ba2"], ["#11998e", "#38ef7d"], ["#f7971e", "#ffd200"],
+            ["#eb3349", "#f45c43"], ["#0f2027", "#2c5364"], ["#8360c3", "#2ebf91"],
+            ["#ee0979", "#ff6a00"], ["#2193b0", "#6dd5ed"], ["#c31432", "#240b36"],
+            ["#00b09b", "#96c93d"]
+        ];
+
+        function initials(name) {
+            const skip = new Set(["hospital", "and", "of", "the", "&", "medical", "research", "centre", "center", "trust", "group", "national", "municipal", "general", "college", "institute", "dr.", "dr", "sir", "b.y.l.", "n.", "j.", "j", "h.", "p.", "d.", "r.", "t.n."]);
+            const words = name.replace(/[().]/g, " ").split(/\s+/).filter(w => w && !skip.has(w.toLowerCase()));
+            const picked = (words.length ? words : name.split(/\s+/)).slice(0, 2);
+            return picked.map(w => w[0]).join("").toUpperCase();
+        }
+
+        function photoStyle(h) {
+            const [c1, c2] = photoPalette[h.id % photoPalette.length];
+            return `background: linear-gradient(135deg, ${c1} 0%, ${c2} 100%);`;
+        }
+
+        function photoTileHtml(h) {
+            return `
+                <div class="hospital-photo" style="${photoStyle(h)}">
+                    <i class="fas fa-hospital"></i>
+                    <div class="hospital-monogram">${initials(h.name)}</div>
+                </div>`;
+        }
+
+        // ---------------------------------------------------------------
+        // Backend connection (Spring Boot + MySQL)
+        // Change API_BASE if the backend runs on another host or port.
+        // ---------------------------------------------------------------
+        const API_BASE = "http://localhost:8080";
+        const AUTH_KEY = "medibedAuth";
+
+        // Login state lives in sessionStorage so a refresh keeps you logged in
+        // until the tab closes or the 1-hour token expires.
+        let auth = null;
+        try {
+            const saved = JSON.parse(sessionStorage.getItem(AUTH_KEY));
+            if (saved && saved.token && saved.expiresAt > Date.now()) auth = saved;
+        } catch (e) { /* storage unavailable: start logged out */ }
+
+        function saveAuth(value) {
+            auth = value;
+            try {
+                if (value) sessionStorage.setItem(AUTH_KEY, JSON.stringify(value));
+                else sessionStorage.removeItem(AUTH_KEY);
+            } catch (e) { /* ignore */ }
+            updateAuthUi();
+        }
+
+        // Turn an error response from the backend into a readable message
+        async function errorMessage(res) {
+            let body = null;
+            try { body = await res.json(); } catch (e) { /* not JSON */ }
+            if (body) {
+                if (body.errors && typeof body.errors === 'object') {
+                    const parts = Array.isArray(body.errors)
+                        ? body.errors.map(x => typeof x === 'string' ? x : (x.field ? x.field + ' ' : '') + (x.message || ''))
+                        : Object.entries(body.errors).map(([k, v]) => k + ' ' + v);
+                    if (parts.length) return parts.join('; ');
+                }
+                if (body.message) return body.message;
+                if (body.error) return body.error;
+            }
+            return 'Request failed (HTTP ' + res.status + ')';
+        }
+
+        // One place for every call to the backend (adds the login token)
+        async function api(path, options = {}) {
+            const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
+            if (auth && auth.token) headers['Authorization'] = 'Bearer ' + auth.token;
+
+            let res;
+            try {
+                res = await fetch(API_BASE + path, Object.assign({}, options, { headers }));
+            } catch (e) {
+                throw new Error('Cannot reach the backend at ' + API_BASE + '. Is it running?');
+            }
+
+            if (res.status === 401 && !options.noAuthRedirect) {
+                saveAuth(null);
+                throw new Error('Your session expired. Please log in again.');
+            }
+            if (res.status === 403) throw new Error('You do not have permission to do that.');
+            if (!res.ok) {
+                const err = new Error(await errorMessage(res));
+                err.status = res.status;
+                throw err;
+            }
+            if (res.status === 204) return null;
+            return res.json();
+        }
+
+        // Convert a backend hospital into the shape the page's cards expect
+        function mapHospital(h) {
+            const b = h.beds || {};
+            return {
+                id: h.id,
+                name: h.name,
+                area: h.area,
+                address: h.address,
+                phone: h.phone || h.emergencyPhone || "",
+                emergencyPhone: h.emergencyPhone,
+                rating: h.rating,
+                preferred: h.preferred,
+                type: h.type,
+                beds: {
+                    General: b.General || 0,
+                    ICU: b.ICU || 0,
+                    Oxygen: b.Oxygen || 0,
+                    NICU: b.NICU || 0,
+                    Emergency: b.Emergency || 0
+                },
+                facilities: h.facilities && h.facilities.length ? h.facilities : ["General Medicine"]
+            };
+        }
+
+        // Load hospitals from the backend (MySQL). If the backend is down,
+        // the demo data above stays in use so the page still works.
+        async function loadHospitalsFromBackend() {
+            try {
+                const res = await fetch(API_BASE + "/api/hospitals");
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                const data = await res.json();
+                hospitals = data.map(mapHospital);
+                console.log("Loaded " + hospitals.length + " hospitals from backend");
+                return true;
+            } catch (e) {
+                console.warn("Backend unavailable, using demo data:", e.message);
+                return false;
+            }
+        }
+
+        // Reload from the database and redraw everything that shows hospitals
+        async function refreshHospitals() {
+            await loadHospitalsFromBackend();
+            populateAreaFilter();
+            populateHospitalSelects();
+            renderAdminStats();
+            renderAdminHospitalList();
+            applyFilters();
+        }
+
+        // ---------- Login / logout ----------
+        let pendingAfterLogin = null;
+
+        function updateAuthUi() {
+            const link = document.getElementById('authNavLink');
+            if (!link) return;
+            link.textContent = auth ? 'Logout (' + auth.username + ')' : 'Login';
+        }
+
+        function authNavClick() {
+            if (auth) logout();
+            else openLogin();
+        }
+
+        function logout() {
+            const token = auth && auth.token;
+            saveAuth(null);
+            if (token) {
+                // Tell the backend too; ignore failures, the local logout already happened
+                fetch(API_BASE + '/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } })
+                    .catch(() => {});
+            }
+            populateHospitalSelects();
+            showHomePage();
+        }
+
+        function openLogin(afterLogin) {
+            pendingAfterLogin = afterLogin || null;
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('loginPassword').value = '';
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal')).show();
+            setTimeout(() => document.getElementById('loginUsername').focus(), 300);
+        }
+
+        async function submitLogin(event) {
+            event.preventDefault();
+            const errBox = document.getElementById('loginError');
+            const btn = document.getElementById('loginSubmitBtn');
+            errBox.style.display = 'none';
+            btn.disabled = true;
+            try {
+                const data = await api('/api/auth/login', {
+                    method: 'POST',
+                    noAuthRedirect: true,
+                    body: JSON.stringify({
+                        username: document.getElementById('loginUsername').value.trim(),
+                        password: document.getElementById('loginPassword').value
+                    })
+                });
+                saveAuth({
+                    token: data.token,
+                    username: data.username,
+                    role: data.role,
+                    hospitalId: data.hospitalId,
+                    expiresAt: Date.now() + (data.expiresInSeconds || 3600) * 1000
+                });
+                document.getElementById('loginPassword').value = '';
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('loginModal')).hide();
+                populateHospitalSelects();
+                const next = pendingAfterLogin;
+                pendingAfterLogin = null;
+                if (next) next();
+            } catch (e) {
+                errBox.textContent = (e.status === 401 || e.status === 403) ? 'Wrong username or password.' : e.message;
+                errBox.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            updateAuthUi();
+            await loadHospitalsFromBackend();
+            populateAreaFilter();
+            populateHospitalSelects();
+            applyFilters();
+            showHomePage();
+        });
+
+        // Show/Hide Pages
+        function showHomePage() {
+            document.getElementById('homePage').style.display = 'block';
+            document.getElementById('aboutPage').classList.remove('active');
+            document.getElementById('hospitalDashboard').classList.remove('active');
+            document.getElementById('adminPanel').classList.remove('active');
+        }
+
+        function showAboutPage() {
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('aboutPage').classList.add('active');
+            document.getElementById('hospitalDashboard').classList.remove('active');
+            document.getElementById('adminPanel').classList.remove('active');
+        }
+
+        function showHospitalDashboard() {
+            // Bed updates need a login (hospital admin or super admin)
+            if (!auth) {
+                openLogin(showHospitalDashboard);
+                return;
+            }
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('aboutPage').classList.remove('active');
+            document.getElementById('hospitalDashboard').classList.add('active');
+            document.getElementById('adminPanel').classList.remove('active');
+        }
+
+        function showAdminPanel() {
+            // Registering / editing / deleting hospitals is for the super admin only
+            if (!auth) {
+                openLogin(showAdminPanel);
+                return;
+            }
+            if (auth.role !== 'SUPER_ADMIN') {
+                alert('The Admin panel is only for the super admin account. You are logged in as ' + auth.username + ' (' + auth.role + '). Use Hospital Login to update your hospital\'s beds.');
+                return;
+            }
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('aboutPage').classList.remove('active');
+            document.getElementById('hospitalDashboard').classList.remove('active');
+            document.getElementById('adminPanel').classList.add('active');
+            renderAdminStats();
+            renderAdminHospitalList();
+        }
+
+        // Populate area filter dropdown from hospital data
+        function populateAreaFilter() {
+            const areas = [...new Set(hospitals.map(h => h.area))].sort();
+            const select = document.getElementById('areaFilterMain');
+            const current = select.value;
+            // Rebuild from scratch so repeated refreshes don't add duplicates
+            select.innerHTML = '<option value="">All Mumbai Areas</option>';
+            areas.forEach(area => {
+                const opt = document.createElement('option');
+                opt.value = area;
+                opt.textContent = area;
+                select.appendChild(opt);
+            });
+            select.value = areas.includes(current) ? current : '';
+        }
+
+        function populateHospitalSelects() {
+            const select = document.getElementById('hospitalSelect');
+            select.innerHTML = '<option value="">Select Hospital</option>';
+            // A hospital admin can only manage their own hospital; the super admin sees all
+            const own = auth && auth.role === 'HOSPITAL_ADMIN' && auth.hospitalId != null;
+            const list = own ? hospitals.filter(h => h.id === auth.hospitalId) : hospitals;
+            list.forEach(h => {
+                const opt = document.createElement('option');
+                opt.value = h.id;
+                opt.textContent = h.name + " (" + h.area + ")";
+                select.appendChild(opt);
+            });
+            if (own && list.length === 1) {
+                select.value = list[0].id;
+                showCurrentStatus();
+            }
+        }
+
+        // Search / Filter
+        function searchHospitals() {
+            applyFilters();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchCity').value = '';
+            applyFilters();
+            document.getElementById('searchCity').focus();
+        }
+
+        function applyFilters() {
+            const rawQuery = document.getElementById('searchCity').value;
+            document.getElementById('searchClearBtn').classList.toggle('show', rawQuery.length > 0);
+            const query = rawQuery.trim().toLowerCase();
+            const area = document.getElementById('areaFilterMain').value;
+            const bedType = document.getElementById('bedTypeFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+
+            filteredHospitals = hospitals.filter(h => {
+                const matchesQuery = !query || h.name.toLowerCase().includes(query) || h.area.toLowerCase().includes(query);
+                const matchesArea = !area || h.area === area;
+                const matchesBedType = !bedType || h.beds[bedType] > 0;
+                const matchesType = !typeFilter || h.type === typeFilter;
+                return matchesQuery && matchesArea && matchesBedType && matchesType;
+            });
+
+            if (sortBy === 'name') {
+                filteredHospitals.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (sortBy === 'availability') {
+                filteredHospitals.sort((a, b) => totalBeds(b) - totalBeds(a));
+            } else if (sortBy === 'area') {
+                filteredHospitals.sort((a, b) => a.area.localeCompare(b.area));
+            }
+
+            renderHospitals(filteredHospitals);
+        }
+
+        // Render hospital cards
+        function renderHospitals(list) {
+            // Keep the banner number in step with the real hospital count
+            const heroCount = document.getElementById('heroHospitalCount');
+            if (heroCount) heroCount.textContent = hospitals.length;
+            const container = document.getElementById('resultsSection');
+            const countLabel = document.getElementById('resultsCount');
+            countLabel.textContent = list.length + " hospital" + (list.length === 1 ? "" : "s") + " found across Mumbai";
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-hospital-user"></i>
+                        <p>No hospitals match your search. Try clearing filters.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = list.map(h => {
+                const bedTypes = ['General', 'ICU', 'Oxygen', 'NICU', 'Emergency'];
+                const bedHtml = bedTypes.map(type => `
+                    <div class="bed-item">
+                        <div class="bed-type">${type}</div>
+                        <div class="bed-count ${bedClass(h.beds[type])}">${h.beds[type]}</div>
+                    </div>
+                `).join('');
+
+                return `
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="hospital-card">
+                        ${photoTileHtml(h)}
+                        <div class="hospital-header">
+                            <div class="hospital-name">${h.name}</div>
+                            <div class="hospital-tags">
+                                <span class="tag-badge"><i class="fas fa-map-pin"></i> ${h.area}</span>
+                                <span class="tag-badge">${h.type}</span>
+                            </div>
+                        </div>
+                        <div class="hospital-body">
+                            <div class="bed-status">${bedHtml}</div>
+                            <div class="hospital-info">
+                                <div class="info-row">
+                                    <i class="fas fa-location-dot"></i>
+                                    <span>${h.address}</span>
+                                </div>
+                                <div class="info-row">
+                                    <i class="fas fa-phone"></i>
+                                    <a href="${telUrl(h.phone)}">${h.phone}</a>
+                                </div>
+                            </div>
+                            <div class="hospital-actions">
+                                <button class="btn-details" onclick="openHospitalDetails(${h.id})">
+                                    <i class="fas fa-circle-info"></i> Details
+                                </button>
+                                <a class="btn-call" href="${telUrl(h.phone)}">
+                                    <i class="fas fa-phone"></i>&nbsp;Call
+                                </a>
+                                <a class="btn-directions" href="${mapsUrl(h)}" target="_blank" rel="noopener">
+                                    <i class="fas fa-diamond-turn-right"></i>&nbsp;Directions
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Hospital details modal
+        function openHospitalDetails(id) {
+            const h = hospitals.find(x => x.id === id);
+            if (!h) return;
+
+            document.getElementById('modalHospitalName').textContent = h.name;
+
+            const bedTypes = ['General', 'ICU', 'Oxygen', 'NICU', 'Emergency'];
+            const bedRows = bedTypes.map(type => `
+                <div class="info-row">
+                    <i class="fas fa-bed"></i>
+                    <span><strong>${type} Beds:</strong> <span class="${bedClass(h.beds[type])}">${h.beds[type]} available (sample data)</span></span>
+                </div>
+            `).join('');
+
+            document.getElementById('modalBodyContent').innerHTML = `
+                ${photoTileHtml(h)}
+                <div class="info-row mt-3"><i class="fas fa-location-dot"></i><span><strong>Address:</strong> ${h.address}</span></div>
+                <div class="info-row"><i class="fas fa-phone"></i><span><strong>Phone:</strong> <a href="${telUrl(h.phone)}">${h.phone}</a></span></div>
+                <div class="info-row"><i class="fas fa-building"></i><span><strong>Type:</strong> ${h.type}</span></div>
+                <div class="info-row"><i class="fas fa-stethoscope"></i><span><strong>Facilities:</strong> ${h.facilities.join(', ')}</span></div>
+                <hr>
+                ${bedRows}
+            `;
+
+            document.getElementById('callAmbulanceBtn').href = telUrl(h.phone);
+            document.getElementById('modalDirectionsBtn').href = mapsUrl(h);
+
+            const modal = new bootstrap.Modal(document.getElementById('hospitalDetailsModal'));
+            modal.show();
+        }
+
+        // Dashboard: show current status for selected hospital
+        function showCurrentStatus() {
+            const id = parseInt(document.getElementById('hospitalSelect').value);
+            const statusBox = document.getElementById('currentStatus');
+            const h = hospitals.find(x => x.id === id);
+
+            if (!h) {
+                statusBox.innerHTML = '<p style="color: #999; text-align: center;">Select a hospital to view current status</p>';
+                return;
+            }
+
+            selectedHospitalId = id;
+            const bedTypes = ['General', 'ICU', 'Oxygen', 'NICU', 'Emergency'];
+            statusBox.innerHTML = bedTypes.map(type => `
+                <div class="d-flex justify-content-between mb-2">
+                    <span>${type} Beds</span>
+                    <strong class="${bedClass(h.beds[type])}">${h.beds[type]}</strong>
+                </div>
+            `).join('');
+
+            document.getElementById('generalBeds').value = h.beds.General;
+            document.getElementById('icuBeds').value = h.beds.ICU;
+            document.getElementById('oxygenBeds').value = h.beds.Oxygen;
+            document.getElementById('nicuBeds').value = h.beds.NICU;
+            document.getElementById('emergencyBeds').value = h.beds.Emergency;
+        }
+
+        // Small helper to show a success / error message in one of the alert boxes
+        function flash(boxId, message, isError) {
+            const box = document.getElementById(boxId);
+            box.textContent = message;
+            box.className = 'alert-custom' + (isError ? ' error' : '') + ' show';
+            clearTimeout(box._t);
+            box._t = setTimeout(() => box.classList.remove('show'), isError ? 6000 : 3000);
+        }
+
+        // Dashboard: update bed availability (saved to MySQL via PATCH /api/hospitals/{id}/beds)
+        async function updateHospitalBeds(event) {
+            event.preventDefault();
+            const id = parseInt(document.getElementById('hospitalSelect').value);
+            const h = hospitals.find(x => x.id === id);
+
+            if (!h) {
+                flash('dashboardAlert', 'Please select a hospital first.', true);
+                return;
+            }
+
+            const num = elId => Math.max(0, parseInt(document.getElementById(elId).value) || 0);
+            const body = {
+                generalBeds: num('generalBeds'),
+                icuBeds: num('icuBeds'),
+                oxygenBeds: num('oxygenBeds'),
+                nicuBeds: num('nicuBeds'),
+                emergencyBeds: num('emergencyBeds')
+            };
+
+            try {
+                const updated = await api('/api/hospitals/' + id + '/beds', {
+                    method: 'PATCH',
+                    body: JSON.stringify(body)
+                });
+                const idx = hospitals.findIndex(x => x.id === id);
+                hospitals[idx] = mapHospital(updated);
+                flash('dashboardAlert', h.name + ' bed availability saved to the database.', false);
+                showCurrentStatus();
+                applyFilters();
+            } catch (e) {
+                flash('dashboardAlert', e.message, true);
+            }
+        }
+
+        // Admin: add or update a hospital (form is shared between both modes)
+        async function saveHospital(event) {
+            event.preventDefault();
+            const editingId = document.getElementById('editingHospitalId').value;
+            const name = document.getElementById('newHospitalName').value.trim();
+            const area = document.getElementById('newHospitalArea').value.trim();
+            const address = document.getElementById('newHospitalAddress').value.trim();
+            const phone = document.getElementById('newHospitalPhone').value.trim();
+            const type = document.getElementById('newHospitalType').value;
+            const facilitiesRaw = document.getElementById('newHospitalFacilities').value.trim();
+
+            if (!name || !area || !address || !phone) {
+                flash('adminAlert', 'Please fill in all required fields.', true);
+                return;
+            }
+
+            const facilities = facilitiesRaw
+                ? facilitiesRaw.split(',').map(f => f.trim()).filter(Boolean)
+                : null;
+
+            // Fields left out keep their stored value on update (rating, beds, emergency phone...)
+            const body = { name, area, address, phone, type };
+            if (facilities && facilities.length) body.facilities = facilities;
+
+            try {
+                if (editingId) {
+                    await api('/api/hospitals/' + editingId, { method: 'PUT', body: JSON.stringify(body) });
+                    flash('adminAlert', name + ' updated in the database.', false);
+                } else {
+                    await api('/api/hospitals', { method: 'POST', body: JSON.stringify(body) });
+                    flash('adminAlert', name + ' registered in the database.', false);
+                }
+                cancelEditHospital();
+                await refreshHospitals();
+            } catch (e) {
+                flash('adminAlert', e.message, true);
+            }
+        }
+
+        // Admin: load a hospital's details into the form for editing
+        function editHospital(id) {
+            const h = hospitals.find(x => x.id === id);
+            if (!h) return;
+
+            document.getElementById('editingHospitalId').value = h.id;
+            document.getElementById('newHospitalName').value = h.name;
+            document.getElementById('newHospitalArea').value = h.area;
+            document.getElementById('newHospitalAddress').value = h.address;
+            document.getElementById('newHospitalPhone').value = h.phone;
+            document.getElementById('newHospitalType').value = h.type;
+            document.getElementById('newHospitalFacilities').value = h.facilities.join(', ');
+
+            document.getElementById('hospitalFormTitle').textContent = 'Edit Hospital';
+            document.getElementById('hospitalFormSubmitBtn').textContent = 'Update Hospital';
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+            document.getElementById('hospitalFormTitle').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Admin: reset the form back to "add new" mode
+        function cancelEditHospital() {
+            document.getElementById('editingHospitalId').value = '';
+            document.getElementById('newHospitalName').value = '';
+            document.getElementById('newHospitalArea').value = '';
+            document.getElementById('newHospitalAddress').value = '';
+            document.getElementById('newHospitalPhone').value = '';
+            document.getElementById('newHospitalType').value = 'Private';
+            document.getElementById('newHospitalFacilities').value = '';
+
+            document.getElementById('hospitalFormTitle').textContent = 'Register New Hospital';
+            document.getElementById('hospitalFormSubmitBtn').textContent = 'Register Hospital';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        // Admin: remove a hospital entirely
+        async function deleteHospital(id) {
+            const h = hospitals.find(x => x.id === id);
+            if (!h) return;
+            if (!confirm('Remove ' + h.name + ' from the database? Its doctors, appointments and ambulance requests are deleted too. This cannot be undone.')) return;
+
+            try {
+                await api('/api/hospitals/' + id, { method: 'DELETE' });
+                if (document.getElementById('editingHospitalId').value === String(id)) {
+                    cancelEditHospital();
+                }
+                await refreshHospitals();
+                flash('adminAlert', h.name + ' was removed.', false);
+            } catch (e) {
+                flash('adminAlert', e.message, true);
+            }
+        }
+
+        function renderAdminStats() {
+            document.getElementById('totalHospitals').textContent = hospitals.length;
+            document.getElementById('totalBeds').textContent = hospitals.reduce((sum, h) => sum + totalBeds(h), 0);
+            const govCount = hospitals.filter(h => h.type === 'Government').length;
+            const privCount = hospitals.filter(h => h.type === 'Private').length;
+            document.getElementById('govVsPrivate').textContent = govCount + ' / ' + privCount;
+        }
+
+        function renderAdminHospitalList() {
+            const list = document.getElementById('hospitalsList');
+            if (hospitals.length === 0) {
+                list.innerHTML = '<p class="text-muted text-center">No hospitals registered yet.</p>';
+                return;
+            }
+            list.innerHTML = hospitals.map(h => `
+                <div class="hospital-list-item">
+                    <div>
+                        <strong>${h.name}</strong><br>
+                        <small class="text-muted">${h.area} &middot; ${h.type} &middot; ${h.phone}</small>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <a href="${mapsUrl(h)}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary" title="Directions">
+                            <i class="fas fa-map"></i>
+                        </a>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" title="Edit" onclick="editHospital(${h.id})">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" title="Remove" onclick="deleteHospital(${h.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
